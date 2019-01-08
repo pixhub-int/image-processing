@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<style>
+	.Test {
+		white-space: nowrap;
+	}
+	</style>
+</head>
+<body>
+
+<p>
+	<a href="http://libwebpjs.hohenlimburg.org/butteraugli/" target="_blank">libwebpjs.hohenlimburg.org/butteraugli</a>
+</p>
+
+<div id="output"></div>
+
+<script src="butteraugli.js"></script>
+<script>
+tests();
+
+async function tests () {
+	await getDistance({
+		info: 'обычное изображение',
+		a: '../../images/110532.png',
+		b: '../../images/110532.mj-90-0-hvs-psnr.png'
+	});
+
+	await getDistance({
+		info: 'с прозрачностью',
+		a: '../../images/mbike.png',
+		b: '../../images/mbike.tinypng.png'
+	});
+
+	await getDistance({
+		info: 'меньше 8 пкс в ширину',
+		a: '../../images/arrow.png',
+		b: '../../images/arrow.png.png'
+	});
+
+	async function getDistance (item) {
+		var i1 = await loadImage(item.a);
+		var i2 = await loadImage(item.b);
+
+		var data1 = i1.getContext('2d').getImageData(0, 0, i1.width, i1.height);
+		var data2 = i2.getContext('2d').getImageData(0, 0, i2.width, i2.height);
+
+		var result = await butteraugli({
+			image1: data1,
+			image2: data2
+		});
+
+		var heatCanvas = document.createElement('canvas');
+		var heatContext = heatCanvas.getContext('2d');
+
+		heatCanvas.width = data1.width;
+		heatCanvas.height = data1.height;
+
+		heatContext.putImageData(result.heatmap, 0, 0);
+
+		var test = document.createElement('div');
+		var info = document.createElement('div');
+		var distanceNode = document.createElement('div');
+		var finish = document.createElement('div');
+		var images = document.createElement('div');
+
+		test.className = 'Test';
+		info.innerHTML = item.info;
+		distanceNode.innerHTML = Math.round(result.distance * 100) / 100;
+		finish.innerHTML = Math.round(result.duration) +' мс';
+
+		images.appendChild(i1);
+		images.appendChild(i2);
+		images.appendChild(heatCanvas);
+
+		test.appendChild(info);
+		test.appendChild(distanceNode);
+		test.appendChild(finish);
+		test.appendChild(images);
+
+		output.appendChild(test);
+	};
+};
+
+async function loadImage(src) {
+	var imgBlob = await fetch(src).then(resp => resp.blob());
+	var img = await createImageBitmap(imgBlob);
+	
+	var canvas = document.createElement('canvas');
+	var ctx = canvas.getContext('2d');
+
+	canvas.width = img.width;
+	canvas.height = img.height;
+	ctx.drawImage(img, 0, 0);
+
+	return canvas;
+};
+
+
+
+// function getImageData(image) {
+// 	var c = document.createElement('canvas');
+// 	var cx = c.getContext('2d');
+
+// 	c.width = image.naturalWidth;
+// 	c.height = image.naturalHeight;
+// 	cx.drawImage(image, 0, 0);
+
+// 	return cx.getImageData(0,0, c.width, c.height);
+// }
+
+// 	butteraugliEmscriptenBtn.addEventListener("click", function (evt) {
+// 		var rgbadata1=getImageData(image1);
+// 		var rgbadata2=getImageData(image2);
+// 		var headmapcanvas=document.createElement('canvas');
+// 		var headmapContext=headmapcanvas.getContext("2d");
+	
+// 		headmapcanvas.width=rgbadata1.width;
+// 		headmapcanvas.height=rgbadata2.height;
+	
+// 		var headmapdata=headmapContext.getImageData(0,0,headmapcanvas.width,headmapcanvas.height);
+// 		var headmapdata3bytes=[];
+	
+// 		butteraugliEmscriptenBtn.value='Butteraugli (emscripten) (waiting)';
+// 		butteraugliEmscriptenBtn.disabled=true;
+	
+// 		var size=rgbadata1.width*rgbadata1.height*3;
+// 		var headmap=Module._malloc(size);
+
+// 		var startP = performance.now();
+
+// 		var rgbadata1arr=Module._malloc(rgbadata1.data.length);
+	
+// 		Module.HEAPU8.set(rgbadata1.data, rgbadata1arr);
+	
+// 		var rgbadata2arr=Module._malloc(rgbadata2.data.length);
+	
+// 		Module.HEAPU8.set(rgbadata2.data, rgbadata2arr);
+	
+// 		var start = new Date();
+	
+// 		score.innerHTML=Module._butteraugli_output(rgbadata1arr,rgbadata1.width,rgbadata1.height,rgbadata2arr, rgbadata2.width,rgbadata2.height,headmap);
+// 		score.innerHTML+=' (Speed: '+(new Date()-start)+' ms)';
+
+// 		console.log(performance.now() - startP);
+	
+// 		var headmapdata3bytes = new Uint8Array(size);
+	
+// 		headmapdata3bytes.set(Module.HEAPU8.subarray(headmap,headmap+size));
+		
+// 		for(var i=0,a=0;i<headmapdata3bytes.length;a+=4,i+=3) {
+// 			headmapdata.data[a+0]=headmapdata3bytes[i+0];
+// 			headmapdata.data[a+1]=headmapdata3bytes[i+1];
+// 			headmapdata.data[a+2]=headmapdata3bytes[i+2];
+// 			headmapdata.data[a+3]=255;
+// 		}
+		
+// 		headmapContext.putImageData(headmapdata,0,0);
+// 		butteraugliEmscriptenBtn.value='Butteraugli (emscripten)';
+// 		butteraugliEmscriptenBtn.disabled=false;
+
+// 		document.body.appendChild(headmapcanvas);
+// 	});
+</script>
+
+</body>
+</html>

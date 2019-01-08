@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<style>
+.Test {
+	white-space: nowrap;
+}
+</style>
+<body>
+
+<div id="output"></div>
+
+<script src="butteraugli-wrapper.js"></script>
+<script>
+tests();
+
+async function tests () {
+	await getDistance({
+		info: 'обычное изображение',
+		a: '../images/110532.png',
+		b: '../images/110532.mj-90-0-hvs-psnr.png'
+	});
+
+	await getDistance({
+		info: 'с прозрачностью',
+		a: '../images/mbike.png',
+		b: '../images/mbike.tinypng.png'
+	});
+
+	await getDistance({
+		info: 'меньше 8 пкс в ширину',
+		a: '../images/arrow.png',
+		b: '../images/arrow.png.png'
+	});
+
+	async function getDistance (item) {
+		var i1 = await loadImage(item.a);
+		var i2 = await loadImage(item.b);
+
+		var data1 = i1.getContext('2d').getImageData(0, 0, i1.width, i1.height);
+		var data2 = i2.getContext('2d').getImageData(0, 0, i2.width, i2.height);
+
+		var result = await butteraugli({
+			image1: data1,
+			image2: data2
+		});
+
+		var heatCanvas = document.createElement('canvas');
+		var heatContext = heatCanvas.getContext('2d');
+
+		heatCanvas.width = data1.width;
+		heatCanvas.height = data1.height;
+
+		heatContext.putImageData(result.heatmap, 0, 0);
+
+		var test = document.createElement('div');
+		var info = document.createElement('div');
+		var distanceNode = document.createElement('div');
+		var finish = document.createElement('div');
+		var images = document.createElement('div');
+
+		test.className = 'Test';
+		info.innerHTML = item.info;
+		distanceNode.innerHTML = Math.round(result.distance * 100) / 100;
+		finish.innerHTML = Math.round(result.duration) +' мс';
+
+		images.appendChild(i1);
+		images.appendChild(i2);
+		images.appendChild(heatCanvas);
+
+		test.appendChild(info);
+		test.appendChild(distanceNode);
+		test.appendChild(finish);
+		test.appendChild(images);
+
+		output.appendChild(test);
+	};
+};
+
+async function loadImage(src) {
+	var imgBlob = await fetch(src).then(resp => resp.blob());
+	var img = await createImageBitmap(imgBlob);
+	
+	var canvas = document.createElement('canvas');
+	var ctx = canvas.getContext('2d');
+
+	canvas.width = img.width;
+	canvas.height = img.height;
+	ctx.drawImage(img, 0, 0);
+
+	return canvas;
+};
+</script>
+
+</body>
+</html>
