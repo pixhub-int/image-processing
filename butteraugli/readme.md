@@ -4,7 +4,7 @@
 [github.com/google/butteraugli](https://github.com/google/butteraugli)
 
 Посмотреть в работе можно здесь  
-https://pixhub-int.github.io/image-processing/butteraugli/
+[pixhub-int.github.io/image-processing/butteraugli](https://pixhub-int.github.io/image-processing/butteraugli/)
 
 ---
 
@@ -14,7 +14,7 @@ https://pixhub-int.github.io/image-processing/butteraugli/
 [github.com/dominikhlbg/butteraugli.js/issues/1](https://github.com/dominikhlbg/butteraugli.js/issues/1)
 
 Версия от Доминика @dominikhlbg рядом  
-https://pixhub-int.github.io/image-processing/butteraugli/dominikhlbg/
+[pixhub-int.github.io/image-processing/butteraugli/dominikhlbg](https://pixhub-int.github.io/image-processing/butteraugli/dominikhlbg/)
 
 Сборке помогла статья.
 В частности, использовался докер с предустановленным эмскриптеном.  
