@@ -22,6 +22,12 @@ async function tests () {
 	});
 
 	await getDistance({
+		info: 'большое изображение',
+		a: '../images/bg_sopt.png',
+		b: '../images/bg_sopt.png.jpeg'
+	});
+
+	await getDistance({
 		info: 'с прозрачностью',
 		a: '../images/mbike.png',
 		b: '../images/mbike.tinypng.png'
