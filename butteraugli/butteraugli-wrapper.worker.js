@@ -11,13 +11,13 @@ onmessage = function (e) {
 		var i2 = e.data.b;
 
 		var heatmapContainer = e.data.heatmap;
-		var heatSize = i1.width * i1.height * 4;
-		var heatPointer = Module._malloc(heatSize);
+		var size = i1.width * i1.height * 4;
+		var heatPointer = Module._malloc(size);
 
-		var i1arr = Module._malloc(i1.data.length);
+		var i1arr = Module._malloc(size);
 		Module.HEAPU8.set(i1.data, i1arr);
 	
-		var i2arr = Module._malloc(i2.data.length);
+		var i2arr = Module._malloc(size);
 		Module.HEAPU8.set(i2.data, i2arr);
 
 		var start = performance.now();
@@ -30,10 +30,8 @@ onmessage = function (e) {
 		);
 		var finish = performance.now() - start;
 	
-		heatmapContainer.data.set(Module.HEAPU8.subarray(heatPointer,heatPointer + heatSize));
+		heatmapContainer.data.set(Module.HEAPU8.subarray(heatPointer,heatPointer + size));
 
-		api.mfree(i1arr);
-		api.mfree(i2arr);
 		api.mfree(heatPointer);
 	
 		postMessage({

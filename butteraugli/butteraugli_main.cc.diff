@@ -349,11 +349,15 @@
 <       return 1;
 ---
 >       return 1.0;
-427d203
+427c204,206
 <   printf("%lf\n", diff_value);
-429d204
+---
+>   
+>   free(rgba1);
+>   free(rgba2);
+429d207
 <   if (argc == 4) {
-435,453c210,218
+435,453c213,221
 <     FILE* const fmap = fopen(argv[3], "wb");
 <     if (fmap == NULL) {
 <       fprintf(stderr, "Cannot open %s\n", argv[3]);
@@ -383,14 +387,14 @@
 >       heatmap[j + 2] = rgb[i + 2];
 >       heatmap[j + 3] = 255;
 >       j += 4;
-455,456d219
+455,456d222
 <     if (!ok) return 1;
 <   }
-458c221
+458c224
 <   return 0;
 ---
 >     return diff_value;
-462a226,237
+462a229,240
 > int main(int argc, char** argv) {}
 > 
 > extern "C" {
@@ -403,7 +407,7 @@
 >     heatmap
 >   );
 > }
-464c239,242
+464c242,245
 < int main(int argc, char** argv) { return butteraugli::Run(argc, argv); }
 ---
 > void mfree(uint8_t* p) {
