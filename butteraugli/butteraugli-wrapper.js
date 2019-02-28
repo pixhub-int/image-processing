@@ -1,3 +1,20 @@
+// получение пути к текущему скрипту
+(function () {
+	try {
+		var result = document.currentScript.src.split('/');
+
+		result.pop();
+		result = result.join('/');
+		result += '/';
+
+		window.butteraugliWorkerPath = result;
+	}
+	catch (e) {
+		console.log(e);
+		window.butteraugliWorkerPath = '';
+	}
+})();
+
 function butteraugli (cfg) {
 	if (butteraugli.__worker) {
 		butteraugli.__worker.terminate();
@@ -5,7 +22,7 @@ function butteraugli (cfg) {
 	butteraugli.__worker = null;
 
 	return new Promise(function (resolve, reject) {
-		butteraugli.__worker = new Worker("../butteraugli/butteraugli-wrapper.worker.js");
+		butteraugli.__worker = new Worker(window.butteraugliWorkerPath +"butteraugli-wrapper.worker.js");
 
 		var heatmapContainer;
 		var c = document.createElement('canvas');

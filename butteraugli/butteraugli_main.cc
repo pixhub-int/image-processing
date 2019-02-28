@@ -201,6 +201,9 @@ double Run(uint8_t* rgba1, uint8_t* rgba2, int width, int height, uint8_t* heatm
       diff_map_ptr = &diff_map_on_white;
     }
   }
+  
+  free(rgba1);
+  free(rgba2);
 
     const double good_quality = ::butteraugli::ButteraugliFuzzyInverse(1.5);
     const double bad_quality = ::butteraugli::ButteraugliFuzzyInverse(0.5);
